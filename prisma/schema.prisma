@@ -10,15 +10,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-}
-
 model User {
   id            String    @id
   name          String
@@ -26,9 +17,11 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+  projects      Project[]
+  credits       Int       @default(10)
 
   @@unique([email])
   @@map("user")
@@ -46,7 +39,6 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
-  @@index([userId])
   @@map("session")
 }
 
@@ -66,7 +58,6 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  @@index([userId])
   @@map("account")
 }
 
@@ -76,8 +67,22 @@ model Verification {
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now()) @updatedAt
 
-  @@index([identifier])
   @@map("verification")
+}
+
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String?
+  imageUrl    String
+  imageKitId  String
+  filePath    String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("project")
 }
