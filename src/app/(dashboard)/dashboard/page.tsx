@@ -1,9 +1,12 @@
 import React from 'react'
+import { AuthGuard } from './settings/auth-guard'
 
 export default function page() {
   return (
-    <div>
-      Page
-    </div>
+    <AuthGuard>
+        <div>
+          Page
+        </div>
+    </AuthGuard>
   )
 }

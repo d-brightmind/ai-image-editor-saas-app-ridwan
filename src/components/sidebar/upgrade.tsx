@@ -8,9 +8,9 @@ export default function Upgrade() {
   const upgrade = async () => {
     await authClient.checkout({
       products: [
-        "43585d8b-a849-485c-a359-7773d185d8ef",
-        "ba9b9094-3f22-4933-86f2-7d74cdcfbf52",
-        "2c7735ec-5758-4c6a-8907-da76dced50b6",
+        "d918a4e6-a99e-4710-a04e-10b05171884a",
+        "9348718d-f2ca-4463-b08e-3d66b6bd47d3",
+        "9e93a25b-7c13-4ef5-bf89-dfc9ffc31707",
       ],
     });
   };
@@ -19,7 +19,7 @@ export default function Upgrade() {
     <Button
       variant="outline"
       size="sm"
-      className="group relative ml-2 cursor-pointer overflow-hidden border-orange-400/50 bg-gradient-to-r from-orange-400/10 to-pink-500/10 text-orange-400 transition-all duration-300 hover:border-orange-500/70 hover:bg-gradient-to-r hover:from-orange-500 hover:to-pink-600 hover:text-white hover:shadow-lg hover:shadow-orange-500/25"
+      className="group relative ml-2 cursor-pointer overflow-hidden border-orange-400/50 bg-linear-to-r from-orange-400/10 to-pink-500/10 text-orange-400 transition-all duration-300 hover:border-orange-500/70 hover:bg-linear-to-r hover:from-orange-500 hover:to-pink-600 hover:text-white hover:shadow-lg hover:shadow-orange-500/25"
       onClick={upgrade}
     >
       <div className="flex items-center gap-2">
@@ -29,7 +29,7 @@ export default function Upgrade() {
       </div>
 
       {/* Subtle glow effect */}
-      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-orange-400/20 to-pink-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-0 rounded-md bg-linear-to-r from-orange-400/20 to-pink-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </Button>
   );
 }
