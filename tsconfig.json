@@ -39,5 +39,9 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "generated"]
+  "exclude": ["node_modules", "generated"],
+  "content": [
+  "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  "./node_modules/@daveyplate/better-auth-ui/**/*.{js,ts,jsx,tsx}", // add this
+  ],
 }
