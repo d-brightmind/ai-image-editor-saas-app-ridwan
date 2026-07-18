@@ -66,8 +66,19 @@ export type UserButtonProps = {
     | "secondary"
   /** Additional menu entries rendered above the built-in items. */
   links?: (UserButtonLink | ReactElement)[]
+  /**
+   * Alias for `links`. Additional menu entries rendered above the built-in items.
+   * Provided for callers that prefer this naming.
+   */
+  additionalLinks?: (UserButtonLink | ReactElement)[]
   /** Hide the built-in "Settings" link. Useful when replacing it via `links`. */
   hideSettings?: boolean
+  /**
+   * Hide ALL built-in items (Settings, sign in/up/out) so only the
+   * entries passed via `links`/`additionalLinks` are shown.
+   * @default false
+   */
+  disableDefaultLinks?: boolean
 }
 
 function renderUserLink(
@@ -102,7 +113,9 @@ function renderUserLink(
  * @param size - "icon" renders only the avatar; "default" renders a full button with label and chevron
  * @param variant - Visual variant of the trigger button
  * @param links - Additional menu entries rendered above the built-in items
+ * @param additionalLinks - Alias for `links`
  * @param hideSettings - Hide the built-in "Settings" link
+ * @param disableDefaultLinks - Hide all built-in items (Settings, sign in/up/out)
  * @returns The dropdown menu component with user actions
  */
 export function UserButton({
@@ -112,7 +125,9 @@ export function UserButton({
   size = "default",
   variant = "ghost",
   links,
-  hideSettings = false
+  additionalLinks,
+  hideSettings = false,
+  disableDefaultLinks = false
 }: UserButtonProps) {
   const { authClient, basePaths, viewPaths, localization, plugins, navigate } =
     useAuth()
@@ -122,7 +137,9 @@ export function UserButton({
   )
   const { data: session, isPending: sessionPending } = useSession(authClient)
 
-  const userLinks = links?.flatMap((link, index) => {
+  const resolvedLinks = links ?? additionalLinks
+
+  const userLinks = resolvedLinks?.flatMap((link, index) => {
     if (!isValidElement(link)) {
       const visibility = link.visibility ?? "always"
       if (visibility === "authenticated" && !session) return []
@@ -189,7 +206,7 @@ export function UserButton({
           <>
             {userLinks}
 
-            {!hideSettings && (
+            {!disableDefaultLinks && !hideSettings && (
               <DropdownMenuItem
                 onClick={() =>
                   navigate({
@@ -209,47 +226,53 @@ export function UserButton({
               ))
             )}
 
-            <DropdownMenuSeparator />
+            {!disableDefaultLinks && <DropdownMenuSeparator />}
 
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  to: `${basePaths.auth}/${viewPaths.auth.signOut}`
-                })
-              }
-            >
-              <LogOut className="text-muted-foreground" />
+            {!disableDefaultLinks && (
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    to: `${basePaths.auth}/${viewPaths.auth.signOut}`
+                  })
+                }
+              >
+                <LogOut className="text-muted-foreground" />
 
-              {localization.auth.signOut}
-            </DropdownMenuItem>
+                {localization.auth.signOut}
+              </DropdownMenuItem>
+            )}
           </>
         ) : (
           <>
             {userLinks}
 
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  to: `${basePaths.auth}/${viewPaths.auth.signIn}`
-                })
-              }
-            >
-              <LogIn className="text-muted-foreground" />
+            {!disableDefaultLinks && (
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    to: `${basePaths.auth}/${viewPaths.auth.signIn}`
+                  })
+                }
+              >
+                <LogIn className="text-muted-foreground" />
 
-              {localization.auth.signIn}
-            </DropdownMenuItem>
+                {localization.auth.signIn}
+              </DropdownMenuItem>
+            )}
 
-            <DropdownMenuItem
-              onClick={() =>
-                navigate({
-                  to: `${basePaths.auth}/${viewPaths.auth.signUp}`
-                })
-              }
-            >
-              <UserPlus2 className="text-muted-foreground" />
+            {!disableDefaultLinks && (
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({
+                    to: `${basePaths.auth}/${viewPaths.auth.signUp}`
+                  })
+                }
+              >
+                <UserPlus2 className="text-muted-foreground" />
 
-              {localization.auth.signUp}
-            </DropdownMenuItem>
+                {localization.auth.signUp}
+              </DropdownMenuItem>
+            )}
 
             {plugins.flatMap((plugin) =>
               plugin.userMenuItems?.map((Item, index) => (
