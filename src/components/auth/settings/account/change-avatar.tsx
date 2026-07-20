@@ -48,7 +48,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
         (await avatar.resize?.(file, avatar.size, avatar.extension)) || file
 
       const image =
-        (await avatar.upload?.(resized)) || (await fileToBase64(resized))
+        (await avatar.upload?.(resized)) ?? (await fileToBase64(resized))
 
       updateUser(
         { image },
@@ -72,17 +72,19 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
     updateUser(
       { image: null },
       {
-        onSuccess: async () => {
-          if (currentImage) {
-            setIsDeleting(true)
-            try {
-              await avatar.delete?.(currentImage)
-            } finally {
-              setIsDeleting(false)
+        onSuccess: () => {
+          void (async () => {
+            if (currentImage) {
+              setIsDeleting(true)
+              try {
+                await avatar.delete?.(currentImage)
+              } finally {
+                setIsDeleting(false)
+              }
             }
-          }
 
-          toast.success(localization.settings.avatarDeletedSuccess)
+            toast.success(localization.settings.avatarDeletedSuccess)
+          })()
         }
       }
     )

@@ -2,6 +2,7 @@
 
 import {
   type AdditionalField as AdditionalFieldConfig,
+  type AdditionalFieldOption,
   resolveInputType
 } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
@@ -214,7 +215,7 @@ export function AdditionalField({
           defaultChecked={
             field.defaultValue === true || field.defaultValue === "true"
           }
-          disabled={isPending || field.readOnly}
+          disabled={Boolean(isPending) || Boolean(field.readOnly)}
         />
 
         <FieldContent>
@@ -234,7 +235,7 @@ export function AdditionalField({
             field.defaultValue === true || field.defaultValue === "true"
           }
           required={field.required}
-          disabled={isPending || field.readOnly}
+          disabled={Boolean(isPending) || Boolean(field.readOnly)}
         />
 
         <FieldContent>
@@ -255,7 +256,7 @@ export function AdditionalField({
             field.defaultValue != null ? String(field.defaultValue) : undefined
           }
           required={field.required}
-          disabled={isPending || field.readOnly}
+          disabled={Boolean(isPending) || Boolean(field.readOnly)}
         >
           <SelectTrigger id={name} className="w-full">
             <SelectValue placeholder={field.placeholder} />
@@ -287,7 +288,7 @@ export function AdditionalField({
             field.defaultValue != null ? String(field.defaultValue) : undefined
           }
           required={field.required}
-          disabled={isPending || field.readOnly}
+          disabled={Boolean(isPending) || Boolean(field.readOnly)}
         >
           <ComboboxInput placeholder={field.placeholder} id={name} />
 
@@ -295,7 +296,7 @@ export function AdditionalField({
             <ComboboxEmpty>No items found.</ComboboxEmpty>
 
             <ComboboxList>
-              {(option) => (
+              {(option: AdditionalFieldOption) => (
                 <ComboboxItem key={option.value} value={option}>
                   {option.label}
                 </ComboboxItem>
@@ -442,11 +443,13 @@ function SliderField({ name, field, isPending }: AdditionalFieldProps) {
         id={name}
         name={name}
         value={[value]}
-        onValueChange={(v) => setValue((Array.isArray(v) ? v[0] : v) ?? min)}
+        onValueChange={(v: number | readonly number[]) =>
+          setValue((typeof v === "number" ? v : v[0]) ?? min)
+        }
         min={min}
         max={max}
         step={step}
-        disabled={isPending || field.readOnly}
+        disabled={Boolean(isPending) || Boolean(field.readOnly)}
       />
 
       <FieldError />
@@ -505,6 +508,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
           type="text"
           name={name}
           value={formValue}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op: this input is controlled by `formValue` above and only exists to surface native required-field validation via onInvalid
           onChange={() => {}}
           required={field.required}
           tabIndex={-1}
@@ -521,7 +525,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
             id={`${name}-date`}
             data-empty={!date}
             aria-invalid={!!error}
-            disabled={isPending || field.readOnly}
+            disabled={Boolean(isPending) || Boolean(field.readOnly)}
             className={cn(
               buttonVariants({ variant: "outline" }),
               "flex-1 justify-between font-normal",
@@ -560,7 +564,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
               step="1"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              disabled={isPending || field.readOnly}
+              disabled={Boolean(isPending) || Boolean(field.readOnly)}
               className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
             />
           </Field>

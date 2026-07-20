@@ -51,8 +51,8 @@ export function UserAvatar({
   const resolvedUser = user ?? session?.user
 
   const initials = (
-    resolvedUser?.username ||
-    resolvedUser?.name ||
+    resolvedUser?.username ??
+    resolvedUser?.name ??
     resolvedUser?.email
   )
     ?.slice(0, 2)
@@ -68,14 +68,14 @@ export function UserAvatar({
       <AvatarImage
         src={resolvedUser?.image ?? undefined}
         alt={
-          resolvedUser?.displayUsername ||
-          resolvedUser?.name ||
+          resolvedUser?.displayUsername ??
+          resolvedUser?.name ??
           resolvedUser?.email
         }
       />
 
       <AvatarFallback className="text-muted-foreground!">
-        {fallback || initials || <User2 className="size-4" />}
+        {fallback ?? initials ?? <User2 className="size-4" />}
       </AvatarFallback>
     </Avatar>
   )

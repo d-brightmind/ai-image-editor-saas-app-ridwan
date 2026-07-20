@@ -55,7 +55,7 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
       viewPaths.settings,
       ...plugins.map((plugin) => plugin.viewPaths?.settings)
     ]
-      .flatMap((source) => Object.values(source ?? {}))
+      .flatMap((source) => Object.values(source ?? {}) as string[])
       .join(", ")
     throw new Error(
       `[Better Auth UI] Unknown settings path "${path}". Valid paths are: ${validPaths}`

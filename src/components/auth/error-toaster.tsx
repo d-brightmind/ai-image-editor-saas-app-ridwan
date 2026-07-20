@@ -8,6 +8,12 @@ import type { BetterFetchError } from "better-auth/react"
 import { useEffect } from "react"
 import { toast } from "sonner"
 
+/** Shape of the `error.error` payload better-auth sends on failed requests. */
+interface AuthErrorBody {
+  code?: string
+  message?: string
+}
+
 export function ErrorToaster() {
   const queryClient = useQueryClient()
 
@@ -21,8 +27,9 @@ export function ErrorToaster() {
       if (!matchQuery({ queryKey: authQueryKeys.all }, query)) return
 
       const err = error as BetterFetchError
-      if (err?.error?.code === "EMAIL_NOT_VERIFIED") return
-      if (err?.error) toast.error(err.error.message)
+      const errBody = err?.error as AuthErrorBody | undefined
+      if (errBody?.code === "EMAIL_NOT_VERIFIED") return
+      if (errBody) toast.error(errBody.message)
     }
 
     const mutationCache = queryClient.getMutationCache()
@@ -48,8 +55,9 @@ export function ErrorToaster() {
       }
 
       const err = error as BetterFetchError
-      if (err.error?.code === "EMAIL_NOT_VERIFIED") return
-      toast.error(err.error?.message || err.message)
+      const errBody = err.error as AuthErrorBody | undefined
+      if (errBody?.code === "EMAIL_NOT_VERIFIED") return
+      toast.error(errBody?.message ?? err.message)
     }
 
     return () => {

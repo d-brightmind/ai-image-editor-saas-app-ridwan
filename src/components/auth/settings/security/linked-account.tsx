@@ -23,6 +23,12 @@ export type LinkedAccountProps = {
   provider: SocialProvider
 }
 
+/** Provider-specific account fields (shape varies by OAuth provider). */
+interface ProviderAccountData {
+  login?: string
+  username?: string
+}
+
 /**
  * Render a single linked social account row with provider info and link/unlink control.
  *
@@ -53,11 +59,12 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const ProviderIcon = providerIcons[provider]
   const providerName = getProviderName(provider)
 
+  const providerData = accountInfo?.data as ProviderAccountData | undefined
   const displayName =
-    accountInfo?.data?.login ||
-    accountInfo?.data?.username ||
-    accountInfo?.user?.email ||
-    accountInfo?.user?.name ||
+    providerData?.login ??
+    providerData?.username ??
+    accountInfo?.user?.email ??
+    accountInfo?.user?.name ??
     account?.accountId
 
   return (

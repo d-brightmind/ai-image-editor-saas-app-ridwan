@@ -174,11 +174,12 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="text-2xl font-bold text-yellow-600">
                   {user?.createdAt
-                    ? new Date(user.createdAt as string | number | Date).toLocaleDateString("en-US", {
+                    ? new Date(user.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         year: "numeric",
                       })
-                    : "N/A"}
+                    : "N/A"
+                    }
                 </div>
                 <p className="text-muted-foreground text-xs">Account created</p>
               </CardContent>

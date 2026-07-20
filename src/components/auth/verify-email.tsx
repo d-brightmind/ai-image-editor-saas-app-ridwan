@@ -26,6 +26,7 @@ const RESEND_COOLDOWN_SECONDS = 60
  * @returns Whether the component has hydrated on the client.
  */
 function useIsHydrated() {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- intentional no-op: this store never changes after mount, so there's nothing to unsubscribe from
   const subscribe = () => () => {}
   return useSyncExternalStore(
     subscribe,
@@ -59,7 +60,9 @@ export function VerifyEmail({ className }: VerifyEmailProps) {
 
   const isHydrated = useIsHydrated()
   const [email, setEmail] = useState(
-    (isHydrated && sessionStorage.getItem("better-auth-ui.verify-email")) || ""
+    isHydrated
+      ? (sessionStorage.getItem("better-auth-ui.verify-email") ?? "")
+      : ""
   )
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS)
 

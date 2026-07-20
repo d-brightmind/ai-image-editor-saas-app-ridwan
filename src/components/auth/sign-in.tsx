@@ -63,7 +63,8 @@ export function SignIn({
       onError: (error, { email }) => {
         setPassword("")
 
-        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+        const errorCode = (error.error as { code?: string } | undefined)?.code
+        if (errorCode === "EMAIL_NOT_VERIFIED") {
           sessionStorage.setItem("better-auth-ui.verify-email", email)
           navigate({
             to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`
@@ -84,8 +85,8 @@ export function SignIn({
   })
   const isPending = signInMutating + signUpMutating > 0
 
-  const Captcha = plugins.find(
-    (plugin) => plugin.captchaComponent
+  const Captcha = plugins.find((plugin) =>
+    Boolean(plugin.captchaComponent)
   )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{

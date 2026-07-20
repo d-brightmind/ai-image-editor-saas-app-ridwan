@@ -152,11 +152,17 @@ export function UserProfile({ className }: UserProfileProps) {
 
               // Re-mount when the session value loads so the field's
               // uncontrolled `defaultValue` reflects the latest data.
-              const key = `${field.name}:${
+              const valueKey =
                 value instanceof Date
                   ? value.toISOString()
-                  : String(value ?? "")
-              }`
+                  : value == null
+                    ? ""
+                    : typeof value === "string" ||
+                        typeof value === "number" ||
+                        typeof value === "boolean"
+                      ? String(value)
+                      : JSON.stringify(value)
+              const key = `${field.name}:${valueKey}`
 
               return (
                 <AdditionalField
