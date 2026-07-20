@@ -5,6 +5,14 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  serverExternalPackages: [
+    "ws",
+    "bufferutil",
+    "utf-8-validate",
+    "@neondatabase/serverless",
+    "@prisma/adapter-neon",
+  ],
+};
 
 export default config;
